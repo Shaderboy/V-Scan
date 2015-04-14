@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sondsara.v_scan" >
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.CAMERA" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="v-scan"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.sondsara.v_scan.MainActivity"
+            android:label="v-scan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.sondsara.v_scan.ZBarScannerActivity"
+            android:label="v-scan"
+            android:screenOrientation="landscape" >
+        </activity>
+
+        <activity
+            android:name="com.sondsara.v_scan.MainActivity2"
+            android:label="MainActivity2"
+            android:screenOrientation="portrait" >
+        </activity>
+    </application>
+
+</manifest>
