@@ -4,10 +4,16 @@ This is an android app that allows you to scan a product's upc code and will tel
 
 # How to use:
 
-1. Download latest release.
+1. Download latest release from the APK folder.
 2. Extract file.
 3. Connect Android device to PC with USB cable (make sure USB storage is turned on.
 4. Copy file to device's storage.
+
+OR
+
+1. Navigate to this page on device
+2. Download APK straight onto phone.
+
 5. Launch .apk file from the File Manager.
 6. Once the barcode scanner is launched, hold the phones camera up to the UPC code on any food item.
 7. Wait until the camera focuses and launches the loading screen.
