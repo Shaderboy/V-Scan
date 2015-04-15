@@ -12,11 +12,12 @@ This is an android app that allows you to scan a product's upc code and will tel
 OR
 
 1. Navigate to this page on device
-2. Download APK straight onto phone.
+2. Go to Release tab
+3. Download APK straight onto phone.
 
 Then...
 
-5. Launch .apk file from the File Manager.
+5. Launch .apk file from the File Manager/Downloads folder.
 6. Once the barcode scanner is launched, hold the phones camera up to the UPC code on any food item.
 7. Wait until the camera focuses and launches the loading screen.
 8. If the item "may be vegan", or is not vegan, touch the highlighted ingredients to learn more about them. Then press anywhere on the background to go back.
