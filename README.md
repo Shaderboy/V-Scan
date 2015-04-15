@@ -14,6 +14,8 @@ OR
 1. Navigate to this page on device
 2. Download APK straight onto phone.
 
+Then...
+
 5. Launch .apk file from the File Manager.
 6. Once the barcode scanner is launched, hold the phones camera up to the UPC code on any food item.
 7. Wait until the camera focuses and launches the loading screen.
