@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,6 +18,7 @@ import com.factual.driver.Query;
 import com.factual.driver.ReadResponse;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +30,7 @@ public class MainActivity2 extends Activity {
     protected Factual factual = new Factual("wDhW6eCPSv2BwdJvvQP63Pbpat7cWAkTnxSazIRM", "9ZIQc30A8DM0sX4qBtZoXE8DtZzf9X5sOQRR3bWf", true);
     private animalIngredient[] badSeeds;
     private ArrayList<animalIngredient> animalProducts;
+    private ArrayList<veganProduct> veganProducts;
     private ListView list;
     private Context context;
     private ImageView pic;
@@ -45,6 +46,7 @@ public class MainActivity2 extends Activity {
 
         Intent intent = this.getIntent();
         animalProducts = intent.getParcelableArrayListExtra("key");
+        veganProducts = intent.getParcelableArrayListExtra("key2");
         upc = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         resultText = (TextView) findViewById(R.id.resultText);
         list = (ListView) findViewById(R.id.listView);
@@ -127,41 +129,76 @@ public class MainActivity2 extends Activity {
             sb.append("");
             int isVegan = 1;
             String contains = "";
+            Boolean safe = false;
 
             if (resp != null) {
+
+                String product;
+                String company;
+
+                try{
+                    product = (String) resp.getData().get(0).get("product_name");
+                    company = (String) resp.getData().get(0).get("brand");
+
+                    for (int i = 0; i < veganProducts.size(); i++) {
+                        if (company.equalsIgnoreCase(veganProducts.get(i).company)){
+                            if (veganProducts.get(i).name.equalsIgnoreCase("Any")){
+                                safe = true;
+                            }else if (veganProducts.get(i).name.equalsIgnoreCase(product)){
+                                safe = true;
+                            }else if (veganProducts.get(i).name.contains("Any but")
+                                    && !veganProducts.get(i).name.toLowerCase().contains(product.toLowerCase())){
+                                safe = true;
+                            }
+                        }
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
 
                 try {
                     JSONArray ingredientsJSON = (JSONArray) resp.getData().get(0).get("ingredients");
                     String[] ingredients = new String[ingredientsJSON.length()];
                     badSeeds = new animalIngredient[ingredientsJSON.length()];
 
-                    for (int i = 0; i < ingredientsJSON.length(); i++) {
+                    if (!safe) {
+                        for (int i = 0; i < ingredientsJSON.length(); i++) {
 
-                        if (!ingredientsJSON.getString(i).contains("Contains"))
-                            ingredients[i] = ingredientsJSON.getString(i);
-                        else
-                            contains = ingredientsJSON.getString(i);
+                            if (!ingredientsJSON.getString(i).toLowerCase().contains("contains"))
+                                ingredients[i] = ingredientsJSON.getString(i);
+                            else
+                                contains = ingredientsJSON.getString(i);
 
-                        for (int j = 0; j < animalProducts.size(); j++) {
-                            if (ingredients[i].contains(animalProducts.get(j).name)) {
-                                if (animalProducts.get(j).name.equals(ingredients[i]))
-                                    badSeeds[i] = animalProducts.get(j);
-                                else {
-                                    String bsName = ingredients[i];
-                                    String bsDerivation = animalProducts.get(j).derivation;
-                                    String bsStatus = animalProducts.get(j).status;
-                                    animalIngredient temp = new animalIngredient(bsName, bsDerivation, bsStatus);
-                                    badSeeds[i] = temp;
-                                }
-                                if (animalProducts.get(j).status.equals("Not Vegan"))
-                                    isVegan = -1;
-                                else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
-                                    isVegan = 0;
-                            } else if (contains.contains(animalProducts.get(j).name))
-                                if (animalProducts.get(j).status.equals("Not Vegan"))
-                                    isVegan = -1;
-                                else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
-                                    isVegan = 0;
+                            for (int j = 0; j < animalProducts.size(); j++) {
+                                if (ingredients[i].toLowerCase().contains(animalProducts.get(j).name.toLowerCase())) {
+                                    if (!ingredients[i].toLowerCase().contains("almond") && !ingredients[i].toLowerCase().contains("soy") && !ingredients[i].toLowerCase().contains("cashew")
+                                            && !ingredients[i].toLowerCase().contains("peanut") && !ingredients[i].toLowerCase().contains("hemp") && !ingredients[i].toLowerCase().contains("rice")
+                                            && !ingredients[i].toLowerCase().contains("cocoa") && !ingredients[i].toLowerCase().contains("coconut")) {
+                                        if (animalProducts.get(j).name.equals(ingredients[i]))
+                                            badSeeds[i] = animalProducts.get(j);
+                                        else {
+                                            String bsName = ingredients[i];
+                                            String bsDerivation = animalProducts.get(j).derivation;
+                                            String bsStatus = animalProducts.get(j).status;
+                                            animalIngredient temp = new animalIngredient(bsName, bsDerivation, bsStatus);
+                                            badSeeds[i] = temp;
+                                        }
+                                        if (animalProducts.get(j).status.equals("Not Vegan"))
+                                            isVegan = -1;
+                                        else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
+                                            isVegan = 0;
+                                    }
+                                } else if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
+                                    if (animalProducts.get(j).status.equals("Not Vegan"))
+                                        isVegan = -1;
+                                    else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
+                                        isVegan = 0;
+                            }
+                        }
+                    }else{
+                        for (int i = 0; i < ingredientsJSON.length(); i++) {
+                            if (!ingredientsJSON.getString(i).toLowerCase().contains("contains"))
+                                ingredients[i] = ingredientsJSON.getString(i);
                         }
                     }
 
@@ -208,12 +245,16 @@ public class MainActivity2 extends Activity {
                     sb.append("Sorry, I couldn't find that in the database. You might have to go this one alone.");
                     resultText.setText(sb.toString());
                     resultText.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
+                    reset.setVisibility(View.VISIBLE);
                     e.printStackTrace();
                 }
             }else{
                 sb.append("Sorry, it looks like the database isn't working right now... Try again later.");
                 resultText.setText(sb.toString());
                 resultText.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.INVISIBLE);
+                reset.setVisibility(View.VISIBLE);
             }
         }
 

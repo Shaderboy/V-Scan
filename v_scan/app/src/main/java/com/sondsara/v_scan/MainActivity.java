@@ -53,14 +53,49 @@ class animalIngredient implements Parcelable {
     };
 }
 
+class veganProduct implements Parcelable {
+    String name = "name";
+    String company = "company";
+
+    public veganProduct (Parcel source){
+        name = source.readString();
+        company = source.readString();
+    }
+
+    public veganProduct (String name, String company){
+        this.name = name;
+        this.company = company;
+    }
+
+    public int describeContents(){
+        return this.hashCode();
+    }
+
+    public void writeToParcel(Parcel dest, int flags){
+        dest.writeString(name);
+        dest.writeString(company);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        public veganProduct createFromParcel (Parcel in){
+            return new veganProduct(in);
+        }
+        public veganProduct[] newArray(int size){
+            return new veganProduct[size];
+        }
+    };
+}
+
 public class MainActivity extends ActionBarActivity {
 
     public String upc = "";
 
     private static final int ZBAR_SCANNER_REQUEST = 0;
     private Cursor c;
+    private Cursor vegC;
     private Database db;
     public ArrayList<animalIngredient> animalProducts = new ArrayList<>();
+    public ArrayList<veganProduct> veganProducts = new ArrayList<>();
     public final static String EXTRA_MESSAGE = "com.Veganizer.main.MESSAGE";
 
 
@@ -79,6 +114,19 @@ public class MainActivity extends ActionBarActivity {
                 String status = c.getString(c.getColumnIndexOrThrow("STATUS"));
                 animalIngredient temp = new animalIngredient(name, derivation, status);
                 animalProducts.add(temp);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        try {
+            vegC = db.getVeggies();
+
+            while (vegC.moveToNext()) {
+                String name = vegC.getString(vegC.getColumnIndexOrThrow("NAME"));
+                String company = vegC.getString(vegC.getColumnIndexOrThrow("COMPANY"));
+                veganProduct temp = new veganProduct(name, company);
+                veganProducts.add(temp);
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -143,6 +191,7 @@ public class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
             intent.putExtra(EXTRA_MESSAGE, upc);
             intent.putParcelableArrayListExtra("key", animalProducts);
+            intent.putParcelableArrayListExtra("key2", veganProducts);
             this.startActivity(intent);
 
         }else if (resultCode == RESULT_CANCELED){
