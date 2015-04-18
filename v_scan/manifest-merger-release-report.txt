@@ -17,7 +17,7 @@ uses-permission#android.permission.CAMERA
 ADDED from AndroidManifest.xml:5:5
 	android:name
 		ADDED from AndroidManifest.xml:5:22
-uses-feature#android.hardware.CAMERA
+uses-feature#android.hardware.camera
 ADDED from AndroidManifest.xml:7:5
 	android:name
 		ADDED from AndroidManifest.xml:7:19
@@ -25,14 +25,6 @@ uses-permission#android.permission.INTERNET
 ADDED from AndroidManifest.xml:9:5
 	android:name
 		ADDED from AndroidManifest.xml:9:22
-uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from AndroidManifest.xml:10:5
-	android:name
-		ADDED from AndroidManifest.xml:10:22
-uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from AndroidManifest.xml:11:5
-	android:name
-		ADDED from AndroidManifest.xml:11:22
 supports-screens
 ADDED from AndroidManifest.xml:13:5
 	android:largeScreens
