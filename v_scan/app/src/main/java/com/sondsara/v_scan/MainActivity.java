@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+//This is our class for animal products. It implements parcelable so we can send our instances of it to MainActivity2.
 class animalIngredient implements Parcelable {
     String name = "name";
     String derivation = "derivation";
@@ -53,6 +54,7 @@ class animalIngredient implements Parcelable {
     };
 }
 
+//Same thing as for animalIngredient.
 class veganProduct implements Parcelable {
     String name = "name";
     String company = "company";
@@ -86,6 +88,8 @@ class veganProduct implements Parcelable {
     };
 }
 
+
+//This activity class is responsible for setting everything up: It parses the databases, stores them into array lists, and then launches the camera.
 public class MainActivity extends ActionBarActivity {
 
     public String upc = "";
@@ -108,6 +112,7 @@ public class MainActivity extends ActionBarActivity {
         try {
             c = db.getIngredients();
 
+            //Add each animal product from the database into the array list one at a time.
             while (c.moveToNext()) {
                 String name = c.getString(c.getColumnIndexOrThrow("NAME"));
                 String derivation = c.getString(c.getColumnIndexOrThrow("DERIVATION"));
@@ -122,6 +127,7 @@ public class MainActivity extends ActionBarActivity {
         try {
             vegC = db.getVeggies();
 
+            //Adding the vegan products now.
             while (vegC.moveToNext()) {
                 String name = vegC.getString(vegC.getColumnIndexOrThrow("NAME"));
                 String company = vegC.getString(vegC.getColumnIndexOrThrow("COMPANY"));
@@ -132,24 +138,18 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        //Now launch the camera, which will kick off the scanning activity.
         LaunchCamera();
     }
 
-    void ScanButton() {
-        ImageButton start = (ImageButton) findViewById(R.id.imageButton);
-        start.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick (View vw) {
-                LaunchCamera();
-            }
-        });
-    }
-
     void LaunchCamera(){
+        //Check to see if we have a working camera.
         if (isCameraAvailable()){
             Intent intent = new Intent (this, ZBarScannerActivity.class);
+            //When this finishes, onActivityResult (below) will get called.
             startActivityForResult (intent, ZBAR_SCANNER_REQUEST);
         }else{
+            //TODO: make this say something else. And not in a toast.
             Toast.makeText(this, "YOU AIN'T GOT A CAMERA BOAH", Toast.LENGTH_SHORT).show();
         }
     }
@@ -184,18 +184,24 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
         if (resultCode == RESULT_OK){
+            //Get the upc code from the scanner. Sometimes it has 13 digits, but our database uses 12 digits only.
+            //Removing the first one will usually find the right result.
             upc = data.getStringExtra(ZBarConstants.SCAN_RESULT);
             if (upc.length() == 13) {
                 upc = upc.substring(1, 13);
             }
+
+            //Start up our MainActivity2 class, which checks the product ingredients against our list of animal products and displays the result.
             Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+            //Give that class access to the upc, as well as our two custom databases.
             intent.putExtra(EXTRA_MESSAGE, upc);
             intent.putParcelableArrayListExtra("key", animalProducts);
             intent.putParcelableArrayListExtra("key2", veganProducts);
+            //Go to MainActivity2.
             this.startActivity(intent);
 
         }else if (resultCode == RESULT_CANCELED){
-            Toast.makeText(this, "Camera Unavailable", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Camera Failed", Toast.LENGTH_SHORT).show();
         }
     }
 

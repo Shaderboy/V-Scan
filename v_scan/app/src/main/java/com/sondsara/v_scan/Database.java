@@ -7,13 +7,11 @@ import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-/**
- * Created by Chris on 12/20/2014.
- */
 public class Database extends SQLiteAssetHelper {
 
     private static String DATABASE_NAME = "test.db";
-    private static final int DATABASE_VERSION = 7;
+    //Make sure this number gets incremented each time the database gets updated.
+    private static final int DATABASE_VERSION = 8;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,10 +23,12 @@ public class Database extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
+        //These are the column names from the animal_products table.
         String[] sqlSelect = {"0 _id", "NAME", "DERIVATION", "STATUS"};
         String sqlTables = "animal_products";
 
         qb.setTables(sqlTables);
+        //This creates a handle to the query to return to our main class.
         Cursor c = qb.query(db, sqlSelect, null, null, null, null, null);
 
         c.moveToFirst();
@@ -36,6 +36,7 @@ public class Database extends SQLiteAssetHelper {
 
     }
 
+    //Same thing as above but for known vegan products
     public Cursor getVeggies(){
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();

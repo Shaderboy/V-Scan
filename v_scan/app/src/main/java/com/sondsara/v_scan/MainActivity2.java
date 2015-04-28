@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+//This is where all the actual logic and display happens.
 public class MainActivity2 extends Activity {
 
     String upc = "";
@@ -45,26 +45,34 @@ public class MainActivity2 extends Activity {
         setContentView(R.layout.activity_main_activity2);
 
         Intent intent = this.getIntent();
+        context = this;
+
+        //Set our local array lists and upc from the first activity's.
         animalProducts = intent.getParcelableArrayListExtra("key");
         veganProducts = intent.getParcelableArrayListExtra("key2");
         upc = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        //Get references to all the gui elements.
         resultText = (TextView) findViewById(R.id.resultText);
         list = (ListView) findViewById(R.id.listView);
-        context = this;
         pic = (ImageView) findViewById(R.id.imageView);
         background = (ImageView) findViewById(R.id.background);
         progress = (ProgressBar) findViewById(R.id.progressBar);
         reset = (ImageButton) findViewById(R.id.restartButton);
 
+        //This makes the whole layout stretch to fit the screen.
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
+        //FactualRetrievalTask is what interacts with our online product database.
         FactualRetrievalTask task = new FactualRetrievalTask();
         task.execute();
 
+        //Set up the listener to rescan. TODO: Move this to activate after result is shown.
         listenRestart();
     }
 
     void listenRestart() {
+        //If they click the "Scan Again" button on the bottom, go to our restart function.
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View vw) {
@@ -74,9 +82,14 @@ public class MainActivity2 extends Activity {
     }
 
     void restart(){
+
+        //Start our main activity again. TODO: Don't re-instantiate the main class.
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        //Tell the activity to keep track of this one, instead of making a new one every time it launches this.
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.startActivity(intent);
+
+        //Set everything to be invisible again.
         list.setVisibility(View.INVISIBLE);
         pic.setVisibility(View.INVISIBLE);
         reset.setVisibility(View.INVISIBLE);
@@ -105,15 +118,18 @@ public class MainActivity2 extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    //This is an asynchronous task, meaning it runs in the background, allowing us to do other stuff while it's loading.
     protected class FactualRetrievalTask extends AsyncTask<Query, Integer, ReadResponse> {
 
         @Override
         protected ReadResponse doInBackground (Query... params){
             try {
+                //Factual API stuff: tell it to look up our upc code and to get the nutrition data for that product.
                 Query query = new Query().field("upc").isEqual(upc);
                 ReadResponse resp = factual.fetch("products-cpg-nutrition", query);
                 return resp;
             }catch (Exception e){
+                //If it can't connect to the database, print out our error message for the user to see.
                 StringBuffer sb = new StringBuffer();
                 sb.append("I can't connect to the database.... Sorry!");
                 resultText.setText(sb.toString());
@@ -122,11 +138,13 @@ public class MainActivity2 extends Activity {
             }
         }
 
+        //This will automatically be called when ReadResponse has finished, and will take the value it returned.
         @Override
         protected void onPostExecute(ReadResponse resp) {
 
             StringBuffer sb = new StringBuffer();
             sb.append("");
+            //Use an int instead of a boolean so we can include Maybe Vegan. TODO: Possibly switch this to an enumerator for more readable code.
             int isVegan = 1;
             String contains = "";
             Boolean safe = false;
@@ -141,11 +159,15 @@ public class MainActivity2 extends Activity {
                     company = (String) resp.getData().get(0).get("brand");
 
                     for (int i = 0; i < veganProducts.size(); i++) {
+                        //First we check to see if our product is made by a company that's on our good list.
                         if (company.equalsIgnoreCase(veganProducts.get(i).company)){
+                            //If it is, and that company is 100% vegan, skip the rest and go straight to the result.
                             if (veganProducts.get(i).name.equalsIgnoreCase("Any")){
                                 safe = true;
+                            //Do the same if the company isn't 100% vegan, but our product is listed as good.
                             }else if (veganProducts.get(i).name.equalsIgnoreCase(product)){
                                 safe = true;
+                            //Also do the same if the company only has a couple of things that aren't vegan and our product isn't one of them.
                             }else if (veganProducts.get(i).name.contains("Any but")
                                     && !veganProducts.get(i).name.toLowerCase().contains(product.toLowerCase())){
                                 safe = true;
@@ -157,25 +179,35 @@ public class MainActivity2 extends Activity {
                 }
 
                 try {
+                    //Now we parse the ingredients via a JSON array that the factual database returns and put them into an array of strings.
                     JSONArray ingredientsJSON = (JSONArray) resp.getData().get(0).get("ingredients");
                     String[] ingredients = new String[ingredientsJSON.length()];
                     badSeeds = new animalIngredient[ingredientsJSON.length()];
 
+                    //If we didn't already declare it safe via our known-vegan list, we can check the ingredients.
                     if (!safe) {
+                        //For each ingredient:
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
 
                             if (!ingredientsJSON.getString(i).toLowerCase().contains("contains"))
                                 ingredients[i] = ingredientsJSON.getString(i);
                             else
+                                //Keep track of statements like "Contains:", but don't include it as one of the ingredients.
                                 contains = ingredientsJSON.getString(i);
 
+                            //For each animal product on our shit list:
                             for (int j = 0; j < animalProducts.size(); j++) {
+
+                                //If our ingredient has that animal product in it's name and ISN'T almond or soy, etc...
+                                //For example, since milk is an animal product, whole milk and skim milk will get flagged, but almond milk won't.
                                 if (ingredients[i].toLowerCase().contains(animalProducts.get(j).name.toLowerCase())) {
                                     if (!ingredients[i].toLowerCase().contains("almond") && !ingredients[i].toLowerCase().contains("soy") && !ingredients[i].toLowerCase().contains("cashew")
                                             && !ingredients[i].toLowerCase().contains("peanut") && !ingredients[i].toLowerCase().contains("hemp") && !ingredients[i].toLowerCase().contains("rice")
                                             && !ingredients[i].toLowerCase().contains("cocoa") && !ingredients[i].toLowerCase().contains("coconut")) {
+                                        //If it's directly equal, add it to our shit list.
                                         if (animalProducts.get(j).name.equals(ingredients[i]))
                                             badSeeds[i] = animalProducts.get(j);
+                                        //If it's not directly equal but contains an animal ingredient on our list, make a new item for it using the info from the item that flagged it.
                                         else {
                                             String bsName = ingredients[i];
                                             String bsDerivation = animalProducts.get(j).derivation;
@@ -183,11 +215,14 @@ public class MainActivity2 extends Activity {
                                             animalIngredient temp = new animalIngredient(bsName, bsDerivation, bsStatus);
                                             badSeeds[i] = temp;
                                         }
+
+                                        //If we've come across an ingredient that's not vegan or sometimes vegan, we already know that the whole product has that same status.
                                         if (animalProducts.get(j).status.equals("Not Vegan"))
                                             isVegan = -1;
-                                        else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
+                                        else if (animalProducts.get(j).status.equals("Sometimes Vegan") && isVegan != -1)
                                             isVegan = 0;
                                     }
+                                //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
                                 } else if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
                                     if (animalProducts.get(j).status.equals("Not Vegan"))
                                         isVegan = -1;
@@ -196,12 +231,14 @@ public class MainActivity2 extends Activity {
                             }
                         }
                     }else{
+                        //If we're already safe, just log the ingredients to show the user.
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
                             if (!ingredientsJSON.getString(i).toLowerCase().contains("contains"))
                                 ingredients[i] = ingredientsJSON.getString(i);
                         }
                     }
 
+                    //Set the picture and background based on our result.
                     if (isVegan == 1) {
                         pic.setImageResource(R.drawable.vegan);
                         background.setImageResource(R.drawable.green_background);
@@ -213,17 +250,23 @@ public class MainActivity2 extends Activity {
                         background.setImageResource(R.drawable.orange_background);
                     }
 
+                    //Create a new Array list of string-animalIngredient pairs to send to our display class.
                     ArrayList<HashMap<String, animalIngredient>> gris = new ArrayList<HashMap<String, animalIngredient>>();
                     HashMap<String, animalIngredient> map;
+
+                    //Add all the ingredients two at a time.
                     for (int q = 0; q < ingredients.length - 1; q+=2) {
                         map = new HashMap<String, animalIngredient>();
+                        //If our badSeeds array has something at the same index as our ingredient, pass through all its information so we can mark it.
                         if (badSeeds[q] != null)
                             map.put("one", badSeeds[q]);
+                        //If not, pass in the name of the ingredient and some dummy information (since we don't have a record of that ingredient).
                         else {
                             animalIngredient temp = new animalIngredient(ingredients[q], "", "");
                             map.put("one", temp);
                         }
 
+                        //Do the same for another ingredient at the same time, so we can display in two columns. Check the CustomListAdapter class to see how this works.
                         if (badSeeds[q + 1] != null)
                             map.put("two", badSeeds[q + 1]);
                         else {

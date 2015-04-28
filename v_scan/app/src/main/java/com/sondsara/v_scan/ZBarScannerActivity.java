@@ -16,6 +16,7 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
+//This is the class responsible for the barcode scanner. It's pretty straightforward.
 public class ZBarScannerActivity extends Activity implements Camera.PreviewCallback, ZBarConstants {
 
     private static final String TAG = "ZBarScannerActivity";
