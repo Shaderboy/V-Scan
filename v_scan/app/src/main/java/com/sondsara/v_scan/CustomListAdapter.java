@@ -21,6 +21,9 @@ public class CustomListAdapter extends BaseAdapter {
     private Context cont;
     private TextView text, text2;
     private View view;
+    private final static int r = 255;
+    private final static int g = 153;
+    private final static int b = 51;
     Typeface font;
 
     //When it gets constructed, set the constructor arguments to their corresponding global variables.
@@ -48,6 +51,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View v, ViewGroup parent) {
+
         //Make our new layout.
         LayoutInflater inflater = (LayoutInflater) cont.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -80,7 +84,7 @@ public class CustomListAdapter extends BaseAdapter {
             text.setClickable(false);
         } else if (status1.equals("Sometimes Vegan")) {
             //TODO:Get rgb values from orange background and set text color to that.
-            text.setTextColor(Color.YELLOW);
+            text.setTextColor(Color.rgb(r, g, b));
             text.setClickable(true);
         } else if (status1.equals("Not Vegan")) {
             text.setTextColor(Color.RED);
@@ -104,7 +108,7 @@ public class CustomListAdapter extends BaseAdapter {
             text2.setTextColor(Color.BLACK);
             text2.setClickable(false);
         } else if (status2.equals("Sometimes Vegan")){
-            text2.setTextColor(Color.YELLOW);
+            text2.setTextColor(Color.rgb(r, g, b));
             text2.setClickable(true);
         }else if (status2.equals("Not Vegan")) {
             text2.setTextColor(Color.RED);
@@ -133,7 +137,7 @@ public class CustomListAdapter extends BaseAdapter {
         if (clicked.status.equals("Not Vegan"))
             info.setTextColor(Color.RED);
         else
-            info.setTextColor(Color.YELLOW);
+            info.setTextColor(Color.rgb(r, g, b));
         info.setVisibility(View.VISIBLE);
 
         //Display the ingredient's name.
@@ -142,7 +146,7 @@ public class CustomListAdapter extends BaseAdapter {
         if (clicked.status.equals("Not Vegan"))
             header.setTextColor(Color.RED);
         else
-            header.setTextColor(Color.YELLOW);
+            header.setTextColor(Color.rgb(r, g, b));
         header.setVisibility(View.VISIBLE);
 
         //Set the popup window itself to be visible. TODO: Get a better graphic for this window.
