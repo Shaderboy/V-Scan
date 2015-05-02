@@ -1,16 +1,21 @@
 package com.sondsara.v_scan;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.factual.driver.Factual;
@@ -18,7 +23,6 @@ import com.factual.driver.Query;
 import com.factual.driver.ReadResponse;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +60,7 @@ public class MainActivity2 extends Activity {
         resultText = (TextView) findViewById(R.id.resultText);
         list = (ListView) findViewById(R.id.listView);
         pic = (ImageView) findViewById(R.id.imageView);
-        background = (ImageView) findViewById(R.id.background);
+        background = (ImageView) findViewById(R.id.lookupBG);
         progress = (ProgressBar) findViewById(R.id.progressBar);
         reset = (ImageButton) findViewById(R.id.restartButton);
 
@@ -64,11 +68,23 @@ public class MainActivity2 extends Activity {
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //FactualRetrievalTask is what interacts with our online product database.
-        FactualRetrievalTask task = new FactualRetrievalTask();
-        task.execute();
+        //FactualRetrievalTask task = new FactualRetrievalTask();
+        //task.execute();
 
         //Set up the listener to rescan. TODO: Move this to activate after result is shown.
-        listenRestart();
+        //listenRestart();
+
+        search();
+
+    }
+
+    void search(){
+        //Launch our ingredient search class.
+        Intent intent = new Intent(MainActivity2.this, Lookup.class);
+        //Give that class access to our two custom databases.
+        intent.putParcelableArrayListExtra("key", animalProducts);
+        intent.putParcelableArrayListExtra("key2", veganProducts);
+        startActivity(intent);
     }
 
     void listenRestart() {
@@ -164,12 +180,13 @@ public class MainActivity2 extends Activity {
                             //If it is, and that company is 100% vegan, skip the rest and go straight to the result.
                             if (veganProducts.get(i).name.equalsIgnoreCase("Any")){
                                 safe = true;
-                                //Do the same if the company isn't 100% vegan, but our product is listed as good.
-                            }else if (veganProducts.get(i).name.toLowerCase().contains(product.toLowerCase())){
-                                safe = true;
-                                //Also do the same if the company only has a couple of things that aren't vegan and our product isn't one of them.
-                            }else if (veganProducts.get(i).name.contains("Any but")
-                                    && !veganProducts.get(i).name.toLowerCase().contains(product.toLowerCase())){
+                            //Also do the same if the company only has a couple of things that aren't vegan and our product isn't one of them.
+                            }else if (veganProducts.get(i).name.contains("Any but")){
+                                if (!veganProducts.get(i).name.toLowerCase().contains(product.toLowerCase())){
+                                    safe = true;
+                                }
+                            //Do the same if the company isn't 100% vegan, but our product is listed as good. It's important that this is the last thing to check.
+                            }else if (product.toLowerCase().contains(veganProducts.get(i).name.toLowerCase())){
                                 safe = true;
                             }
                         }
@@ -189,7 +206,7 @@ public class MainActivity2 extends Activity {
                         //For each ingredient:
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
 
-                            //TODO:Improve "contains less than x% logic"
+                            //TODO:Improve "contains less than x%" logic
                             if (ingredientsJSON.getString(i).toLowerCase().contains("contains less") ||
                                     !ingredientsJSON.getString(i).toLowerCase().contains("contains"))
                                 ingredients[i] = ingredientsJSON.getString(i);
@@ -209,7 +226,8 @@ public class MainActivity2 extends Activity {
                                         if (ingWords[w].toLowerCase().equals(animalProducts.get(j).name.toLowerCase())) {
                                             if (!ingredients[i].toLowerCase().contains("almond") && !ingredients[i].toLowerCase().contains("soy") && !ingredients[i].toLowerCase().contains("cashew")
                                                     && !ingredients[i].toLowerCase().contains("peanut") && !ingredients[i].toLowerCase().contains("hemp") && !ingredients[i].toLowerCase().contains("rice")
-                                                    && !ingredients[i].toLowerCase().contains("cocoa") && !ingredients[i].toLowerCase().contains("coconut") && !ingredients[i].toLowerCase().contains("sunflower")) {
+                                                    && !ingredients[i].toLowerCase().contains("cocoa") && !ingredients[i].toLowerCase().contains("coconut") && !ingredients[i].toLowerCase().contains("sunflower")
+                                                    && !ingredients[i].toLowerCase().contains("vegetable")) {
                                                 //If it's directly equal, add it to our shit list.
                                                 if (animalProducts.get(j).name.equals(ingredients[i]))
                                                     badSeeds[i] = animalProducts.get(j);
@@ -258,14 +276,17 @@ public class MainActivity2 extends Activity {
                                             else if (animalProducts.get(j).status.equals("Sometimes Vegan") && isVegan != -1)
                                                 isVegan = 0;
                                         }
-                                        //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
-                                    } else if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
-                                        if (animalProducts.get(j).status.equals("Not Vegan"))
-                                            isVegan = -1;
-                                        else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
-                                            isVegan = 0;
+                                    }
                                 }
                             }
+                        }
+                        //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
+                        for (int j = 0; j < animalProducts.size(); j++) {
+                            if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
+                                if (animalProducts.get(j).status.equals("Not Vegan"))
+                                    isVegan = -1;
+                                else if (animalProducts.get(j).status.equals("Sometimes Vegan"))
+                                    isVegan = 0;
                         }
                     } else {
                         //If we're already safe, just log the ingredients to show the user.

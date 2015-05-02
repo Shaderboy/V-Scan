@@ -155,7 +155,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         //If the user clicks on the background outside of the info box, close the info box and bring them back to the results page.
         //TODO: Make this so they can click anywhere outside the box, not just on the background.
-        final ImageView background = (ImageView) v.findViewById(R.id.background);
+        final ImageView background = (ImageView) v.findViewById(R.id.lookupBG);
         background.setClickable(true);
         background.setOnClickListener(new View.OnClickListener() {
             @Override

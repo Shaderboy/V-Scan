@@ -193,6 +193,7 @@ public class MainActivity extends ActionBarActivity {
 
             //Start up our MainActivity2 class, which checks the product ingredients against our list of animal products and displays the result.
             Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+            //Intent intent = new Intent(getApplicationContext(), Lookup.class);
             //Give that class access to the upc, as well as our two custom databases.
             intent.putExtra(EXTRA_MESSAGE, upc);
             intent.putParcelableArrayListExtra("key", animalProducts);

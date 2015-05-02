@@ -39,6 +39,33 @@
             android:label="MainActivity2"
             android:screenOrientation="portrait" >
         </activity>
+
+        <activity
+            android:name="com.sondsara.v_scan.Lookup"
+            android:label="Lookup"
+            android:screenOrientation="portrait" >
+
+            <!--<meta-data
+                android:name="android.app.default_searchable"
+                android:value="com.sondsara.v_scan.Search" />-->
+        </activity>
+
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".Search" />
+
+        <activity
+            android:name=".Search">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
+
     </application>
 
 </manifest>
