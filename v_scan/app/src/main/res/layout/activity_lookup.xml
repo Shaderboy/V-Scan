@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.chris.veganizer.Lookup"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lookupBG"
+        android:src="@drawable/green_background" />
+
+   <!-- <AutoCompleteTextView
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:id="@+id/search"
+        android:imeOptions="actionSearch"
+        android:inputType="textAutoComplete|textAutoCorrect"
+        android:textColor="#FFFFFF">
+        <requestFocus />
+    </AutoCompleteTextView>-->
+    
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="400dp"
+        android:id="@+id/productsList"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignBottom="@+id/lookupBG"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:visibility="visible" />
+
+    <ImageButton
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:id="@+id/popupWindow"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:src="@color/dim_foreground_material_dark" />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/popupHeader"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignTop="@+id/popupWindow"
+        android:layout_alignLeft="@+id/popupWindow"
+        android:textColor="@android:color/black"
+        android:visibility="invisible"
+        android:layout_marginRight="15dp" />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/popupText"
+        android:layout_alignTop="@+id/popupHeader"
+        android:layout_alignLeft="@+id/popupWindow"
+        android:layout_alignStart="@+id/popupWindow"
+        android:visibility="invisible"
+        android:layout_alignParentTop="false"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="70dp"
+        android:textColor="@android:color/black"
+        android:layout_marginRight="15dp" />
+
+   <!-- <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/autoList"
+        android:layout_alignRight="@+id/popupWindow"
+        android:layout_alignEnd="@+id/popupWindow"/>-->
+        <!--android:layout_alignBottom="@+id/search"/>-->
+
+</RelativeLayout>

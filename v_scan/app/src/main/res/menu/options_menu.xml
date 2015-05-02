@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search_bar"
+        yourapp:actionViewClass="android.widget.SearchView"
+        android:title="@string/abc_searchview_description_search"
+        android:icon="@drawable/abc_textfield_search_material"
+        yourapp:showAsAction="always">
+    </item>
+</menu>
