@@ -42,11 +42,9 @@ public class Lookup extends ActionBarActivity {
         context = this;
 
         //Set our local array lists and upc from the first activity's.
-        //animalProducts = intent.getParcelableArrayListExtra("key");
         animalProducts = new ArrayList<animalIngredient> (MainActivity.animalProducts.values());
         animalProducts.addAll(MainActivity.spacedAnimalProducts.values());
         //veganProducts = intent.getParcelableArrayListExtra("key2");
-        //String[] options = new String[animalProducts.size()];
 
         list = (ListView) findViewById(R.id.productsList);
         background = (ImageView) findViewById(R.id.lookupBG);
@@ -55,24 +53,20 @@ public class Lookup extends ActionBarActivity {
         //This makes the whole layout stretch to fit the screen.
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        //Create a new Array list of string-animalIngredient pairs to send to our display class.
-        ArrayList<HashMap<String, animalIngredient>> gris = new ArrayList<HashMap<String, animalIngredient>>();
-        HashMap<String, animalIngredient> map;
+        //Create a new Array list of animalIngredient pairs to send to our display class.
+        ArrayList<animalIngredient[]> gris = new ArrayList<animalIngredient[]>();
+        animalIngredient[] map;
 
         //Add all the ingredients two at a time.
         for (int q = 0; q < animalProducts.size(); q+=2) {
-            map = new HashMap<String, animalIngredient>();
-            //If our badSeeds array has something at the same index as our ingredient, pass through all its information so we can mark it.
-            map.put("one", animalProducts.get(q));
-            //options[q] = animalProducts.get(q).name;
+            map = new animalIngredient[2];
+            map[0] = animalProducts.get(q);
 
             if (q < animalProducts.size() - 1) {
-                //Do the same for another ingredient at the same time, so we can display in two columns. Check the CustomListAdapter class to see how this works.
-                map.put("two", animalProducts.get(q + 1));
-                //options[q + 1] = animalProducts.get(q + 1).name;
+                map[1] = animalProducts.get(q + 1);
             }else{
                 animalIngredient fake = new animalIngredient("", "", "");
-                map.put("two", fake);
+                map[1] = fake;
             }
             gris.add(map);
         }
@@ -86,7 +80,7 @@ public class Lookup extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        //super.onCreateOptionsMenu(menu);
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate (R.menu.options_menu, menu);
 
@@ -101,16 +95,5 @@ public class Lookup extends ActionBarActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
 }

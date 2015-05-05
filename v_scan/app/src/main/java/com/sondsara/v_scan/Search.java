@@ -15,7 +15,12 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Search extends ListActivity {
     @Override
@@ -36,29 +41,33 @@ public class Search extends ListActivity {
     private void handleIntent(Intent intent){
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Database db = new Database(this);
 
-            Cursor c = db.getIngredients();
+            TreeMap<String, animalIngredient> sortedProducts = new TreeMap<String, animalIngredient>();
+            sortedProducts.putAll(MainActivity.animalProducts);
+            sortedProducts.putAll(MainActivity.spacedAnimalProducts);
             ArrayList<animalIngredient> results = new ArrayList<animalIngredient>();
             ArrayList<String> names = new ArrayList<String>();
 
-            //Look into red black tree or balanced binary search tree.
             //Search for our query.
-            while (c.moveToNext()) {
-                String name = c.getString(c.getColumnIndexOrThrow("NAME"));
-
-                if (name.toLowerCase().contains(query.toLowerCase())) {
-                    String derivation = c.getString(c.getColumnIndexOrThrow("DERIVATION"));
-                    String status = c.getString(c.getColumnIndexOrThrow("STATUS"));
-                    results.add(new animalIngredient(name, derivation, status));
-                    names.add(name);
-                }
+            for (Map.Entry<String, animalIngredient> entry : filterPrefix(sortedProducts, query).entrySet()){
+                results.add(entry.getValue());
+                names.add(entry.getKey());
             }
 
+            //TODO: Make another custom display class to pass info into these, or simply cull out the ones being displayed already.
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
             setListAdapter(adapter);
 
         }
+    }
+
+    private <V> SortedMap<String, V> filterPrefix (SortedMap<String, V> baseMap, String prefix){
+        if (prefix.length() > 0){
+            char nextLetter = (char) (prefix.charAt(prefix.length() - 1) + 1);
+            String end = prefix.substring(0, prefix.length() - 1) + nextLetter;
+            return baseMap.subMap(prefix, end);
+        }
+        return baseMap;
     }
 
 }

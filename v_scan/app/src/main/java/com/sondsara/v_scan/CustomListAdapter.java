@@ -17,7 +17,7 @@ import java.util.HashMap;
 //This is our custom display class to show the user the ingredients from the scan.
 public class CustomListAdapter extends BaseAdapter {
 
-    private ArrayList<HashMap<String, animalIngredient>> items;
+    private ArrayList<animalIngredient[]> items;
     private Context cont;
     private TextView text, text2;
     private View view;
@@ -27,7 +27,7 @@ public class CustomListAdapter extends BaseAdapter {
     Typeface font;
 
     //When it gets constructed, set the constructor arguments to their corresponding global variables.
-    public CustomListAdapter(Context context, ArrayList<HashMap<String, animalIngredient>> data){
+    public CustomListAdapter(Context context, ArrayList<animalIngredient[]> data){
         super();
         //act = activity;
         cont = context;
@@ -66,8 +66,8 @@ public class CustomListAdapter extends BaseAdapter {
         }
 
         //Get references to each ingredient we passed in. They may not necessarily be animal ingredients, but we're just using that class.
-        final animalIngredient one = items.get(position).get("one");
-        final animalIngredient two = items.get(position).get("two");
+        final animalIngredient one = items.get(position)[0];
+        final animalIngredient two = items.get(position)[1];
 
         //Get the info from each so we can determine how to display them.
         String status1 = one.status;

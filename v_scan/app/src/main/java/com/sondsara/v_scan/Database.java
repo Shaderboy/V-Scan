@@ -11,7 +11,7 @@ public class Database extends SQLiteAssetHelper {
 
     private static String DATABASE_NAME = "test.db";
     //Make sure this number gets incremented each time the database gets updated.
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

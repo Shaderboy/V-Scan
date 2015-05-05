@@ -102,8 +102,9 @@ public class MainActivity extends ActionBarActivity {
     private Database db;
     public static HashMap<String, animalIngredient> animalProducts = new HashMap<String, animalIngredient>();
     public static HashMap<String, animalIngredient> spacedAnimalProducts = new HashMap<String, animalIngredient>();
+    public static HashMap<String, veganProduct> veganProducts = new HashMap<String, veganProduct>();
     //public ArrayList<animalIngredient> animalProducts = new ArrayList<>();
-    public ArrayList<veganProduct> veganProducts = new ArrayList<>();
+    //public ArrayList<veganProduct> veganProducts = new ArrayList<>();
     public final static String EXTRA_MESSAGE = "com.Veganizer.main.MESSAGE";
 
 
@@ -140,14 +141,17 @@ public class MainActivity extends ActionBarActivity {
                 String name = vegC.getString(vegC.getColumnIndexOrThrow("NAME"));
                 String company = vegC.getString(vegC.getColumnIndexOrThrow("COMPANY"));
                 veganProduct temp = new veganProduct(name, company);
-                veganProducts.add(temp);
+                veganProducts.put(temp.company, temp);
             }
         }catch(Exception e){
             e.printStackTrace();
         }
 
         //Now launch the camera, which will kick off the scanning activity.
-        LaunchCamera();
+        //LaunchCamera();
+
+        Intent intent = new Intent(MainActivity.this, Lookup.class);
+        startActivity(intent);
     }
 
     void LaunchCamera(){
@@ -204,8 +208,6 @@ public class MainActivity extends ActionBarActivity {
             //Intent intent = new Intent(getApplicationContext(), Lookup.class);
             //Give that class access to the upc, as well as our two custom databases.
             intent.putExtra(EXTRA_MESSAGE, upc);
-            //intent.putParcelableArrayListExtra("key", animalProducts);
-            intent.putParcelableArrayListExtra("key2", veganProducts);
             //Go to MainActivity2.
             this.startActivity(intent);
 
