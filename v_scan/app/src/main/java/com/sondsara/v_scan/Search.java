@@ -42,6 +42,7 @@ public class Search extends ListActivity {
             ArrayList<animalIngredient> results = new ArrayList<animalIngredient>();
             ArrayList<String> names = new ArrayList<String>();
 
+            //Look into red black tree or balanced binary search tree.
             //Search for our query.
             while (c.moveToNext()) {
                 String name = c.getString(c.getColumnIndexOrThrow("NAME"));

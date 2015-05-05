@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 //This is our class for animal products. It implements parcelable so we can send our instances of it to MainActivity2.
 class animalIngredient implements Parcelable {
@@ -98,7 +100,9 @@ public class MainActivity extends ActionBarActivity {
     private Cursor c;
     private Cursor vegC;
     private Database db;
-    public ArrayList<animalIngredient> animalProducts = new ArrayList<>();
+    public static HashMap<String, animalIngredient> animalProducts = new HashMap<String, animalIngredient>();
+    public static HashMap<String, animalIngredient> spacedAnimalProducts = new HashMap<String, animalIngredient>();
+    //public ArrayList<animalIngredient> animalProducts = new ArrayList<>();
     public ArrayList<veganProduct> veganProducts = new ArrayList<>();
     public final static String EXTRA_MESSAGE = "com.Veganizer.main.MESSAGE";
 
@@ -114,11 +118,15 @@ public class MainActivity extends ActionBarActivity {
 
             //Add each animal product from the database into the array list one at a time.
             while (c.moveToNext()) {
-                String name = c.getString(c.getColumnIndexOrThrow("NAME"));
+                String name = c.getString(c.getColumnIndexOrThrow("NAME")).toLowerCase();
                 String derivation = c.getString(c.getColumnIndexOrThrow("DERIVATION"));
                 String status = c.getString(c.getColumnIndexOrThrow("STATUS"));
                 animalIngredient temp = new animalIngredient(name, derivation, status);
-                animalProducts.add(temp);
+
+                if (name.contains(" "))
+                    spacedAnimalProducts.put(temp.name, temp);
+                else
+                    animalProducts.put(temp.name, temp);
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -196,7 +204,7 @@ public class MainActivity extends ActionBarActivity {
             //Intent intent = new Intent(getApplicationContext(), Lookup.class);
             //Give that class access to the upc, as well as our two custom databases.
             intent.putExtra(EXTRA_MESSAGE, upc);
-            intent.putParcelableArrayListExtra("key", animalProducts);
+            //intent.putParcelableArrayListExtra("key", animalProducts);
             intent.putParcelableArrayListExtra("key2", veganProducts);
             //Go to MainActivity2.
             this.startActivity(intent);

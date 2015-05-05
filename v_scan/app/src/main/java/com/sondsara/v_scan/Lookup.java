@@ -26,6 +26,7 @@ public class Lookup extends ActionBarActivity {
 
     private Context context;
     private ArrayList<animalIngredient> animalProducts;
+    //private HashMap <String, animalIngredient> animalProducts;
     private ArrayList<veganProduct> veganProducts;
     private ListView list;
     private ImageView background;
@@ -41,9 +42,11 @@ public class Lookup extends ActionBarActivity {
         context = this;
 
         //Set our local array lists and upc from the first activity's.
-        animalProducts = intent.getParcelableArrayListExtra("key");
-        veganProducts = intent.getParcelableArrayListExtra("key2");
-        String[] options = new String[animalProducts.size()];
+        //animalProducts = intent.getParcelableArrayListExtra("key");
+        animalProducts = new ArrayList<animalIngredient> (MainActivity.animalProducts.values());
+        animalProducts.addAll(MainActivity.spacedAnimalProducts.values());
+        //veganProducts = intent.getParcelableArrayListExtra("key2");
+        //String[] options = new String[animalProducts.size()];
 
         list = (ListView) findViewById(R.id.productsList);
         background = (ImageView) findViewById(R.id.lookupBG);
@@ -61,12 +64,12 @@ public class Lookup extends ActionBarActivity {
             map = new HashMap<String, animalIngredient>();
             //If our badSeeds array has something at the same index as our ingredient, pass through all its information so we can mark it.
             map.put("one", animalProducts.get(q));
-            options[q] = animalProducts.get(q).name;
+            //options[q] = animalProducts.get(q).name;
 
             if (q < animalProducts.size() - 1) {
                 //Do the same for another ingredient at the same time, so we can display in two columns. Check the CustomListAdapter class to see how this works.
                 map.put("two", animalProducts.get(q + 1));
-                options[q + 1] = animalProducts.get(q + 1).name;
+                //options[q + 1] = animalProducts.get(q + 1).name;
             }else{
                 animalIngredient fake = new animalIngredient("", "", "");
                 map.put("two", fake);
