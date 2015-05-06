@@ -55,7 +55,9 @@
             android:value=".Search" />
 
         <activity
-            android:name=".Search">
+            android:name=".Search"
+            android:parentActivityName=".Lookup"
+            android:allowEmbedded="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

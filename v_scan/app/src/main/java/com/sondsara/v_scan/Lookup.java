@@ -21,9 +21,10 @@ import android.widget.SearchView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
-public class Lookup extends ActionBarActivity {
+public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextListener {
 
     public static TreeMap<String, animalIngredient> sortedProducts = new TreeMap<String, animalIngredient>();
 
@@ -78,10 +79,28 @@ public class Lookup extends ActionBarActivity {
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(true);
-        //searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        animalProducts.clear();
+        for (Map.Entry<String, animalIngredient> entry : Search.filterPrefix(sortedProducts, newText).entrySet()){
+            animalProducts.add(entry.getValue());
+        }
+
+        SearchAdapter adapter = new SearchAdapter(this, animalProducts);
+        list.setAdapter(adapter);
+
+        return true;
     }
 
 }

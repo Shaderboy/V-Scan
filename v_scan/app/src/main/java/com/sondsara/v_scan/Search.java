@@ -11,8 +11,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
 
 import java.lang.reflect.Array;
@@ -22,11 +24,16 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class Search extends ListActivity {
+public class Search extends Activity {
+
+    private ListView list;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.abc_search_view);
+        setContentView(R.layout.activity_lookup);
+
+        list = (ListView) findViewById(R.id.productsList);
 
         handleIntent(getIntent());
 
@@ -53,13 +60,17 @@ public class Search extends ListActivity {
             }
 
             //TODO: Make another custom display class to pass info into these, or simply cull out the ones being displayed already.
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
-            setListAdapter(adapter);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
+            //setListAdapter(adapter);
 
+            SearchAdapter adapter = new SearchAdapter(this, results);
+            list.setAdapter(adapter);
+
+            list.setVisibility(View.VISIBLE);
         }
     }
 
-    private <V> SortedMap<String, V> filterPrefix (SortedMap<String, V> baseMap, String prefix){
+    public static <V> SortedMap<String, V> filterPrefix (SortedMap<String, V> baseMap, String prefix){
         if (prefix.length() > 0){
             char nextLetter = (char) (prefix.charAt(prefix.length() - 1) + 1);
             String end = prefix.substring(0, prefix.length() - 1) + nextLetter;
