@@ -21,8 +21,11 @@ import android.widget.SearchView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class Lookup extends ActionBarActivity {
+
+    public static TreeMap<String, animalIngredient> sortedProducts = new TreeMap<String, animalIngredient>();
 
     private Context context;
     private ArrayList<animalIngredient> animalProducts;
@@ -41,11 +44,6 @@ public class Lookup extends ActionBarActivity {
         Intent intent = this.getIntent();
         context = this;
 
-        //Set our local array lists and upc from the first activity's.
-        animalProducts = new ArrayList<animalIngredient> (MainActivity.animalProducts.values());
-        animalProducts.addAll(MainActivity.spacedAnimalProducts.values());
-        //veganProducts = intent.getParcelableArrayListExtra("key2");
-
         list = (ListView) findViewById(R.id.productsList);
         background = (ImageView) findViewById(R.id.lookupBG);
         //autoList = (ListView) findViewById(R.id.autoList);
@@ -54,25 +52,15 @@ public class Lookup extends ActionBarActivity {
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //Create a new Array list of animalIngredient pairs to send to our display class.
-        ArrayList<animalIngredient[]> gris = new ArrayList<animalIngredient[]>();
-        animalIngredient[] map;
+        sortedProducts.putAll(MainActivity.animalProducts);
+        sortedProducts.putAll(MainActivity.spacedAnimalProducts);
 
-        //Add all the ingredients two at a time.
-        for (int q = 0; q < animalProducts.size(); q+=2) {
-            map = new animalIngredient[2];
-            map[0] = animalProducts.get(q);
+        //Set our local array lists and upc from the first activity's.
+        animalProducts = new ArrayList<animalIngredient> (sortedProducts.values());
+        ArrayList<String> names = new ArrayList<String>();
 
-            if (q < animalProducts.size() - 1) {
-                map[1] = animalProducts.get(q + 1);
-            }else{
-                animalIngredient fake = new animalIngredient("", "", "");
-                map[1] = fake;
-            }
-            gris.add(map);
-        }
-
-        CustomListAdapter adapt = new CustomListAdapter(context, gris);
-        list.setAdapter(adapt);
+        SearchAdapter adapter = new SearchAdapter(this, animalProducts);
+        list.setAdapter(adapter);
 
         list.setVisibility(View.VISIBLE);
 

@@ -42,9 +42,7 @@ public class Search extends ListActivity {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            TreeMap<String, animalIngredient> sortedProducts = new TreeMap<String, animalIngredient>();
-            sortedProducts.putAll(MainActivity.animalProducts);
-            sortedProducts.putAll(MainActivity.spacedAnimalProducts);
+            TreeMap<String, animalIngredient> sortedProducts = Lookup.sortedProducts;
             ArrayList<animalIngredient> results = new ArrayList<animalIngredient>();
             ArrayList<String> names = new ArrayList<String>();
 

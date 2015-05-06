@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lookupBG"
-        android:src="@drawable/green_background" />
+        android:src="@drawable/red_background" />
 
    <!-- <AutoCompleteTextView
         android:layout_width="fill_parent"
@@ -19,8 +19,8 @@
         android:textColor="#FFFFFF">
         <requestFocus />
     </AutoCompleteTextView>-->
-    
-    <ListView
+
+    <!--<ListView
         android:layout_width="fill_parent"
         android:layout_height="400dp"
         android:id="@+id/productsList"
@@ -32,7 +32,22 @@
         android:clickable="true"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        android:visibility="visible" />
+        android:visibility="visible" />-->
+    
+    <ListView
+        android:id="@+id/productsList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/haze"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@color/dim_foreground_material_light"
+        android:clickable="true"
+        android:visibility="invisible"/>
 
     <ImageButton
         android:layout_width="300dp"
@@ -73,12 +88,12 @@
         android:textColor="@android:color/black"
         android:layout_marginRight="15dp" />
 
-   <!-- <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/autoList"
-        android:layout_alignRight="@+id/popupWindow"
-        android:layout_alignEnd="@+id/popupWindow"/>-->
+    <!-- <ListView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:id="@+id/autoList"
+         android:layout_alignRight="@+id/popupWindow"
+         android:layout_alignEnd="@+id/popupWindow"/>-->
         <!--android:layout_alignBottom="@+id/search"/>-->
 
 </RelativeLayout>

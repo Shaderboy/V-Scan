@@ -268,8 +268,7 @@ public class MainActivity2 extends Activity {
                                         break;
 
                                     //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
-                                    } //else if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
-                                        //CheckStatus(ap);
+                                    }
                                 }
 
                                 if (badSeeds[i] == null) {
@@ -283,10 +282,11 @@ public class MainActivity2 extends Activity {
                             }
                         }
                         //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
-                        //for (int j = 0; j < animalProducts.size(); j++) {
-                           // if (contains.toLowerCase().contains(animalProducts.get(j).name.toLowerCase()))
-                             //  CheckStatus(animalProducts.get(j));
-                        //}
+			            String[] containsWords = contains.split(" ");
+                        for (int i = 0; i < containsWords.length; i++) {
+                            if (animalProducts.containsKey(containsWords[i]));
+                                CheckStatus(animalProducts.get(containsWords));
+                        }
                     } else {
                         //If we're already safe, just log the ingredients to show the user.
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
