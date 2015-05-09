@@ -143,10 +143,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //Now launch the camera, which will kick off the scanning activity.
-        //LaunchCamera();
+        LaunchCamera();
 
-        Intent intent = new Intent(MainActivity.this, Lookup.class);
-        startActivity(intent);
+        //Intent intent = new Intent(MainActivity.this, Lookup.class);
+        //startActivity(intent);
     }
 
     void LaunchCamera(){

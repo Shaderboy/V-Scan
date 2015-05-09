@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -56,6 +57,7 @@ public class Analyze extends Activity {
     private TextView resultText = null;
     private ProgressBar progress;
     private ImageButton reset;
+    private Button lookupButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,26 +81,27 @@ public class Analyze extends Activity {
         background = (ImageView) findViewById(R.id.lookupBG);
         progress = (ProgressBar) findViewById(R.id.progressBar);
         reset = (ImageButton) findViewById(R.id.restartButton);
+        lookupButton = (Button) findViewById(R.id.lookupButton);
 
         //This makes the whole layout stretch to fit the screen.
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
-        //TODO: add a little dialogue after this search if it can't find the product to redirect to lookup function/class.
         //FactualRetrievalTask is what interacts with our online product database.
-        //FactualRetrievalTask task = new FactualRetrievalTask();
-        //task.execute();
-
-        //Set up the listener to rescan. TODO: Move this to activate after result is shown.
-        //listenRestart();
-
-        LaunchLookup();
+        FactualRetrievalTask task = new FactualRetrievalTask();
+        task.execute();
 
     }
 
-    void LaunchLookup(){
-        //Launch our ingredient search class.
-        Intent intent = new Intent(Analyze.this, Lookup.class);
-        startActivity(intent);
+    void listenLookup(){
+        lookupButton.setVisibility(View.VISIBLE);
+        lookupButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View vw){
+                //Launch our ingredient search class.
+                Intent intent = new Intent(Analyze.this, Lookup.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void listenRestart() {
@@ -167,6 +170,10 @@ public class Analyze extends Activity {
                 sb.append("I can't connect to the database.... Sorry!");
                 resultText.setText(sb.toString());
                 resultText.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.INVISIBLE);
+                listenLookup();
+                //Set up the listener to rescan.
+                listenRestart();
                 return null;
             }
         }
@@ -209,13 +216,30 @@ public class Analyze extends Activity {
                     }
                 }catch(Exception e){
                     e.printStackTrace();
-                    sb.append ("couldn't check verified list.");
+                    sb.append ("Couldn't find that product.");
                     resultText.setText(sb.toString());
                     resultText.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
+                    listenLookup();
+                    //Set up the listener to rescan.
+                    listenRestart();
+                    return;
                 }
 
                 //Now we parse the ingredients via a JSON array that the factual database returns and put them into an array of strings.
-                JSONArray ingredientsJSON = (JSONArray) resp.getData().get(0).get("ingredients");
+                JSONArray ingredientsJSON = new JSONArray();
+                try {
+                    ingredientsJSON = (JSONArray) resp.getData().get(0).get("ingredients");
+                }catch(Exception e){
+                    sb.append ("Couldn't find that product.");
+                    resultText.setText(sb.toString());
+                    resultText.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
+                    listenLookup();
+                    //Set up the listener to rescan.
+                    listenRestart();
+                    return;
+                }
                 String[] ingredients = new String[ingredientsJSON.length()];
                 badSeeds = new animalIngredient[ingredientsJSON.length()];
 
@@ -293,6 +317,11 @@ public class Analyze extends Activity {
                     sb.append("Couldn't parse the ingredients.");
                     resultText.setText(sb.toString());
                     resultText.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
+                    listenLookup();
+                    //Set up the listener to rescan.
+                    listenRestart();
+                    return;
                 }
                 try {
                     //Set the picture and background based on our result.
@@ -360,7 +389,13 @@ public class Analyze extends Activity {
                 resultText.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.INVISIBLE);
                 reset.setVisibility(View.VISIBLE);
+                listenLookup();
+                //Set up the listener to rescan.
+                listenRestart();
+                return;
             }
+            //Set up the listener to rescan.
+            listenRestart();
         }
 
         void CheckStatus (animalIngredient product){
