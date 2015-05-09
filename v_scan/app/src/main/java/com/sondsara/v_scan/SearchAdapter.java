@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SearchAdapter extends ArrayAdapter<animalIngredient>{
@@ -29,31 +30,59 @@ public class SearchAdapter extends ArrayAdapter<animalIngredient>{
     }
 
     @Override
+    public int getViewTypeCount(){
+        return 1;
+    }
+
+    @Override
+    public int getCount() {
+        return data.size();
+    }
+
+    @Override
+    public animalIngredient getItem(int position) {
+        return data.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
     public View getView (int position, View v, ViewGroup parent){
+        final ViewHolder holder;
+
         //Make our new layout.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         view = v;
 
         if (view == null) {
-            view = inflater.inflate(R.layout.search_list, parent, false);
+            //view = inflater.inflate(R.layout.search_list, parent, false);
+            view = inflater.inflate(R.layout.search_list, null);
+            holder = new ViewHolder();
             //Get reference to the text views within the layout.
-            nameView = (TextView) view.findViewById(R.id.nameView);
-            statusView = (TextView) view.findViewById(R.id.statusView);
+            holder.name = (TextView) view.findViewById(R.id.nameView);
+            holder.status = (TextView) view.findViewById(R.id.statusView);
+            view.setTag(holder);
+        }else{
+            holder = (ViewHolder)view.getTag();
         }
 
         final animalIngredient ap = data.get(position);
 
-        nameView.setText(ap.name);
-        statusView.setText(ap.status);
+        holder.name.setText(ap.name);
+        holder.status.setText(ap.status);
 
-        nameView.setOnClickListener(new View.OnClickListener() {
+        holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vw) {
                 ShowInfo(ap);
             }
         });
-        statusView.setOnClickListener(new View.OnClickListener() {
+
+        holder.status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vw) {
                 ShowInfo(ap);
@@ -102,6 +131,11 @@ public class SearchAdapter extends ArrayAdapter<animalIngredient>{
                 background.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private class ViewHolder{
+        private TextView name;
+        private TextView status;
     }
 
 }
