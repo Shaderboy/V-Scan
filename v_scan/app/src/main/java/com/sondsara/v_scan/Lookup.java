@@ -47,8 +47,6 @@ public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextL
 
         list = (ListView) findViewById(R.id.productsList);
         background = (ImageView) findViewById(R.id.lookupBG);
-        //autoList = (ListView) findViewById(R.id.autoList);
-        //searchBar = (AutoCompleteTextView) findViewById(R.id.search);
         //This makes the whole layout stretch to fit the screen.
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
@@ -60,6 +58,7 @@ public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextL
         animalProducts = new ArrayList<animalIngredient> (sortedProducts.values());
         ArrayList<String> names = new ArrayList<String>();
 
+        //TODO: fix the wonkiness this is causing.
         SearchAdapter adapter = new SearchAdapter(this, animalProducts);
         list.setAdapter(adapter);
 

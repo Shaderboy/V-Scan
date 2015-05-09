@@ -35,8 +35,8 @@
         </activity>
 
         <activity
-            android:name="com.sondsara.v_scan.MainActivity2"
-            android:label="MainActivity2"
+            android:name="com.sondsara.v_scan.Analyze"
+            android:label="Analyze"
             android:screenOrientation="portrait" >
         </activity>
 

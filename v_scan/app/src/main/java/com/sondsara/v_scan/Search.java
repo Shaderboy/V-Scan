@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+//TODO: Since we're auto-culling the display based on real time input, figure out what to do when they hit enter!
+//TODO:(i.e. when this class gets called).
 public class Search extends Activity {
 
     private ListView list;
@@ -59,7 +61,6 @@ public class Search extends Activity {
                 names.add(entry.getKey());
             }
 
-            //TODO: Make another custom display class to pass info into these, or simply cull out the ones being displayed already.
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
             //setListAdapter(adapter);
 

@@ -2,7 +2,6 @@ package com.sondsara.v_scan;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,15 +9,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
-//This is our class for animal products. It implements parcelable so we can send our instances of it to MainActivity2.
+//This is our class for animal products. It implements parcelable so we can send our instances of it to Analyze.
 class animalIngredient implements Parcelable {
     String name = "name";
     String derivation = "derivation";
@@ -111,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_activity2);
+        setContentView(R.layout.activity_analyze);
         db= new Database(this);
 
         try {
@@ -161,8 +156,7 @@ public class MainActivity extends ActionBarActivity {
             //When this finishes, onActivityResult (below) will get called.
             startActivityForResult (intent, ZBAR_SCANNER_REQUEST);
         }else{
-            //TODO: make this say something else. And not in a toast.
-            Toast.makeText(this, "YOU AIN'T GOT A CAMERA BOAH", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sorry, it looks like your camera isn't working.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -203,12 +197,11 @@ public class MainActivity extends ActionBarActivity {
                 upc = upc.substring(1, 13);
             }
 
-            //Start up our MainActivity2 class, which checks the product ingredients against our list of animal products and displays the result.
-            Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-            //Intent intent = new Intent(getApplicationContext(), Lookup.class);
+            //Start up our Analyze class, which checks the product ingredients against our list of animal products and displays the result.
+            Intent intent = new Intent(getApplicationContext(), Analyze.class);
             //Give that class access to the upc, as well as our two custom databases.
             intent.putExtra(EXTRA_MESSAGE, upc);
-            //Go to MainActivity2.
+            //Go to Analyze.
             this.startActivity(intent);
 
         }else if (resultCode == RESULT_CANCELED){
