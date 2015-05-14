@@ -1,5 +1,6 @@
 package com.sondsara.v_scan;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.content.Intent;

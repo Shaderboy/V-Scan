@@ -51,6 +51,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View v, ViewGroup parent) {
+        final ViewHolder holder;
 
         //Make our new layout.
         LayoutInflater inflater = (LayoutInflater) cont.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -59,10 +60,14 @@ public class CustomListAdapter extends BaseAdapter {
 
         if (view == null) {
             view = inflater.inflate(R.layout.custom_list, null);
+            holder = new ViewHolder();
 
             //Get reference to the text views within the layout.
-            text = (TextView) view.findViewById(R.id.textView);
-            text2 = (TextView) view.findViewById(R.id.textView2);
+            holder.one = (TextView) view.findViewById(R.id.textView);
+            holder.two = (TextView) view.findViewById(R.id.textView2);
+            view.setTag(holder);
+        }else{
+            holder = (ViewHolder)view.getTag();
         }
 
         //Get references to each ingredient we passed in. They may not necessarily be animal ingredients, but we're just using that class.
@@ -75,25 +80,40 @@ public class CustomListAdapter extends BaseAdapter {
         String status2 = two.status;
         String name2 = two.name;
 
-        text.setText(name1);
-        text.setTypeface(font);
+        holder.one.setText(one.name);
+        //text.setText(name1);
+        //text.setTypeface(font);
 
         //Set the text color and whether or not we can click on it based on if it's guaranteed vegan or not.
         if (status1.equals("")) {
-            text.setTextColor(Color.BLACK);
-            text.setClickable(false);
+            //text.setTextColor(Color.BLACK);
+            //text.setClickable(false);
+            holder.one.setTextColor(Color.BLACK);
+            holder.one.setClickable(false);
         } else if (status1.equals("Sometimes Vegan")) {
-            //TODO:Get rgb values from orange background and set text color to that.
-            text.setTextColor(Color.rgb(r, g, b));
-            text.setClickable(true);
+            //text.setTextColor(Color.rgb(r, g, b));
+            //text.setClickable(true);
+            holder.one.setTextColor(Color.rgb(r, g, b));
+            holder.one.setClickable(true);
         } else if (status1.equals("Not Vegan")) {
-            text.setTextColor(Color.RED);
-            text.setClickable(true);
+            //text.setTextColor(Color.RED);
+            //text.setClickable(true);
+            holder.one.setTextColor(Color.RED);
+            holder.one.setClickable(true);
         }
 
         //If we've set the ingredient to be clickable (it's not guaranteed vegan), set a click listener to it that will pop up the info box.
-        if (text.isClickable()) {
+        /*if (text.isClickable()) {
             text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vw) {
+                    ShowInfo(one);
+                }
+            });
+        }*/
+
+        if (holder.one.isClickable()) {
+            holder.one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View vw) {
                     ShowInfo(one);
@@ -102,21 +122,37 @@ public class CustomListAdapter extends BaseAdapter {
         }
 
         //All the same as for the first ingredient.
-        text2.setText(name2);
-        text2.setTypeface(font);
+        holder.two.setText(two.name);
+        //text2.setText(name2);
+        //text2.setTypeface(font);
         if (status2.equals("")) {
-            text2.setTextColor(Color.BLACK);
-            text2.setClickable(false);
+            //text2.setTextColor(Color.BLACK);
+            //text2.setClickable(false);
+            holder.two.setTextColor(Color.BLACK);
+            holder.two.setClickable(false);
         } else if (status2.equals("Sometimes Vegan")){
-            text2.setTextColor(Color.rgb(r, g, b));
-            text2.setClickable(true);
+            //text2.setTextColor(Color.rgb(r, g, b));
+            //text2.setClickable(true);
+            holder.two.setTextColor(Color.rgb(r, g, b));
+            holder.two.setClickable(true);
         }else if (status2.equals("Not Vegan")) {
-            text2.setTextColor(Color.RED);
-            text2.setClickable(true);
+            //text2.setTextColor(Color.RED);
+            //text2.setClickable(true);
+            holder.two.setTextColor(Color.RED);
+            holder.two.setClickable(true);
         }
 
-        if (text2.isClickable()) {
+        /*if (text2.isClickable()) {
             text2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vw) {
+                    ShowInfo(two);
+                }
+            });
+        }*/
+
+        if (holder.two.isClickable()) {
+            holder.two.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View vw) {
                     ShowInfo(two);
@@ -129,6 +165,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     //This pops up the information box if an ingredient is tapped.
     private void ShowInfo(animalIngredient clicked){
+
         View v = ((Activity)cont).getWindow().getDecorView().findViewById(android.R.id.content);
 
         //Display our info text in the proper color.
@@ -166,6 +203,11 @@ public class CustomListAdapter extends BaseAdapter {
                 background.setClickable(false);
             }
         });
+    }
+
+    private class ViewHolder{
+        private TextView one;
+        private TextView two;
     }
 
 }

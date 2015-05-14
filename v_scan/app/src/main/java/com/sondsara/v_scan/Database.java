@@ -11,7 +11,7 @@ public class Database extends SQLiteAssetHelper {
 
     private static String DATABASE_NAME = "test.db";
     //Make sure this number gets incremented each time the database gets updated.
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 26;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -21,6 +21,7 @@ public class Database extends SQLiteAssetHelper {
     public Cursor getIngredients() {
 
         SQLiteDatabase db = getReadableDatabase();
+        db.setMaximumSize(500000);
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         //These are the column names from the animal_products table.

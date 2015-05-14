@@ -62,6 +62,7 @@ public class SearchAdapter extends ArrayAdapter<animalIngredient>{
             //view = inflater.inflate(R.layout.search_list, parent, false);
             view = inflater.inflate(R.layout.search_list, null);
             holder = new ViewHolder();
+
             //Get reference to the text views within the layout.
             holder.name = (TextView) view.findViewById(R.id.nameView);
             holder.status = (TextView) view.findViewById(R.id.statusView);

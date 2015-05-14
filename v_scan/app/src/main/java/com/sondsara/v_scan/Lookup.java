@@ -58,7 +58,6 @@ public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextL
         animalProducts = new ArrayList<animalIngredient> (sortedProducts.values());
         ArrayList<String> names = new ArrayList<String>();
 
-        //TODO: fix the wonkiness this is causing.
         SearchAdapter adapter = new SearchAdapter(this, animalProducts);
         list.setAdapter(adapter);
 

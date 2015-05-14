@@ -48,7 +48,7 @@ public class Analyze extends Activity {
 
     private animalIngredient[] badSeeds;
     private HashMap<String, animalIngredient> animalProducts;
-    private HashMap<String, animalIngredient> spacedAnimalProducts;
+    private HashMap<String, animalIngredient> spacedAnimalProducts = new HashMap<String, animalIngredient>();
     private HashMap<String, veganProduct> veganProducts;
     private ListView list;
     private Context context;
@@ -70,7 +70,8 @@ public class Analyze extends Activity {
         //Set our local array lists and upc from the first activity's.
         //animalProducts = intent.getParcelableArrayListExtra("key");
         animalProducts = MainActivity.animalProducts;
-        spacedAnimalProducts = MainActivity.spacedAnimalProducts;
+        //spacedAnimalProducts = MainActivity.spacedAnimalProducts;
+        spacedAnimalProducts.putAll(MainActivity.spacedAnimalProducts);
         veganProducts = MainActivity.veganProducts;
         upc = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
@@ -155,7 +156,14 @@ public class Analyze extends Activity {
     protected class FactualRetrievalTask extends AsyncTask<Query, Integer, ReadResponse> {
 
         //Use an int instead of a boolean so we can include Maybe Vegan. TODO: Possibly switch this to an enumerator for more readable code.
-        int isVegan = 1;
+        //int isVegan = 1;
+
+        /*void CheckStatus (animalIngredient product){
+            if (product.status.equals("Not Vegan"))
+                isVegan = -1;
+            else if (product.status.equals("Sometimes Vegan") && isVegan != -1)
+                isVegan = 0;
+        }*/
 
         @Override
         protected ReadResponse doInBackground (Query... params){
@@ -186,6 +194,7 @@ public class Analyze extends Activity {
             sb.append("");
             String contains = "";
             Boolean safe = false;
+            int isVegan = 1;
 
             if (resp != null) {
 
@@ -231,7 +240,7 @@ public class Analyze extends Activity {
                 try {
                     ingredientsJSON = (JSONArray) resp.getData().get(0).get("ingredients");
                 }catch(Exception e){
-                    sb.append ("Couldn't find that product.");
+                    sb.append ("Couldn't get the ingredients.");
                     resultText.setText(sb.toString());
                     resultText.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
@@ -250,12 +259,12 @@ public class Analyze extends Activity {
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
 
                             //TODO:Improve "contains less than x%" logic
-                            if (ingredientsJSON.getString(i).toLowerCase().contains("contains less") ||
-                                    !ingredientsJSON.getString(i).toLowerCase().contains("contains"))
+                            //if (ingredientsJSON.getString(i).toLowerCase().contains("contains less") ||
+                                   // !ingredientsJSON.getString(i).toLowerCase().contains("contains"))
                                 ingredients[i] = ingredientsJSON.getString(i).toLowerCase();
-                            else
+                            //else
                                 //Keep track of statements like "Contains:", but don't include it as one of the ingredients.
-                                contains = ingredientsJSON.getString(i).toLowerCase();
+                                //contains = ingredientsJSON.getString(i).toLowerCase();
 
                             String[] ingWords = ingredients[i].split(" ");
 
@@ -272,45 +281,67 @@ public class Analyze extends Activity {
 
                                 //If it's directly equal, add it to our shit list.
                                 for (int w = 0; w < ingWords.length; w++){
-                                    if (animalProducts.containsKey(ingWords[w].toLowerCase())){
-                                        animalIngredient ap = animalProducts.get(ingWords[w].toLowerCase());
+                                    if (animalProducts.containsKey(ingWords[w])){
+                                        animalIngredient ap = animalProducts.get(ingWords[w]);
                                         if (ap.name.equals(ingredients[i]))
                                             badSeeds[i] = ap;
+                                        //if (animalProducts.get(ingWords[w]).name.equals(ingredients[i]))
+                                            //badSeeds[i] = animalProducts.get(ingWords[w]);
                                             //If it's not directly equal but contains an animal ingredient on our list, make a new item for it using the info from the item that flagged it.
                                         else {
                                             animalIngredient temp = new animalIngredient(ingredients[i], ap.derivation, ap.status);
+                                            //animalIngredient temp = new animalIngredient(ingredients[i], animalProducts.get(ingWords[w]).derivation, animalProducts.get(ingWords[w]).status);
                                             badSeeds[i] = temp;
                                         }
 
                                         //If we've come across an ingredient that's not vegan or sometimes vegan, we already know that the whole product has that same status.
-                                        CheckStatus(ap);
-                                        break;
+                                        //CheckStatus(ap);
+                                        //break;
+                                        if (ap.status.equals("Not Vegan"))
+                                        //if (animalProducts.get(ingWords[w]).status.equals("Not Vegan"))
+                                            isVegan = -1;
+                                        else if (ap.status.equals("Sometimes Vegan") && isVegan != -1)
+                                        //else if (animalProducts.get(ingWords[w]).status.equals("Sometimes Vegan") && isVegan != -1)
+                                            isVegan = 0;
 
                                     //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
                                     }
                                 }
 
-                                if (badSeeds[i] == null) {
+                                //if (badSeeds[i] == null) {
                                     if (spacedAnimalProducts.containsKey(ingredients[i])) {
-                                        badSeeds[i] = animalProducts.get(ingredients[i]);
+                                        animalIngredient sap = spacedAnimalProducts.get(ingredients[i]);
+                                        badSeeds[i] = sap;
 
                                         //If we've come across an ingredient that's not vegan or sometimes vegan, we already know that the whole product has that same status.
-                                        CheckStatus(animalProducts.get(ingredients[i]));
+                                        //CheckStatus(sap);
+                                        //sb.append(ap.status);
+                                        //if (sap.status.equals("Sometimes Vegan"))
+                                            //sb.append("null");
+                                        if (sap.status.equals("Not Vegan"))
+                                            isVegan = -1;
+                                        else if (sap.status.equals("Sometimes Vegan") && isVegan != -1)
+                                            isVegan = 0;
                                     }
-                                }
+                                //}
+                                sb.append ("parsed ingredient.");
                             }
                         }
                         //Some products are tricky. They won't list animal products in the ingredients, so let's also check the Contains: statement that we saved earlier.
-			            String[] containsWords = contains.split(" ");
+			            /*String[] containsWords = contains.split(" ");
                         for (int i = 0; i < containsWords.length; i++) {
                             if (animalProducts.containsKey(containsWords[i]));
                                 CheckStatus(animalProducts.get(containsWords));
-                        }
+                        }*/
                     } else {
                         //If we're already safe, just log the ingredients to show the user.
                         for (int i = 0; i < ingredientsJSON.length(); i++) {
-                            if (!ingredientsJSON.getString(i).toLowerCase().contains("contains"))
-                                ingredients[i] = ingredientsJSON.getString(i);
+                            //if (ingredientsJSON.getString(i).toLowerCase().contains("contains less") ||
+                               //     !ingredientsJSON.getString(i).toLowerCase().contains("contains"))
+                                ingredients[i] = ingredientsJSON.getString(i).toLowerCase();
+                            //else
+                                //Keep track of statements like "Contains:", but don't include it as one of the ingredients.
+                                //contains = ingredientsJSON.getString(i).toLowerCase();
                         }
                     }
                 }catch (Exception e) {
@@ -321,6 +352,7 @@ public class Analyze extends Activity {
                     listenLookup();
                     //Set up the listener to rescan.
                     listenRestart();
+                    e.printStackTrace();
                     return;
                 }
                 try {
@@ -355,7 +387,7 @@ public class Analyze extends Activity {
                         if (q < ingredients.length - 1) {
                             //Do the same for another ingredient at the same time, so we can display in two columns. Check the CustomListAdapter class to see how this works.
                             if (badSeeds[q + 1] != null)
-                                map[0] = badSeeds[q + 1];
+                                map[1] = badSeeds[q + 1];
                             else {
                                 animalIngredient temp = new animalIngredient(ingredients[q + 1], "", "");
                                 map[1] = temp;
@@ -396,13 +428,6 @@ public class Analyze extends Activity {
             }
             //Set up the listener to rescan.
             listenRestart();
-        }
-
-        void CheckStatus (animalIngredient product){
-            if (product.status.equals("Not Vegan"))
-                isVegan = -1;
-            else if (product.status.equals("Sometimes Vegan") && isVegan != -1)
-                isVegan = 0;
         }
 
     }
