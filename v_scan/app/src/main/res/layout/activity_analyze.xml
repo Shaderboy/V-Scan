@@ -81,6 +81,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="200dp" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/haze"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@color/dim_foreground_material_light"
+        android:clickable="true"
+        android:visibility="invisible"/>
+
     <ImageButton
         android:layout_width="300dp"
         android:layout_height="200dp"

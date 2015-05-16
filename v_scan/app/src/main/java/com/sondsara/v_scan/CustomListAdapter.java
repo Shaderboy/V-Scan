@@ -76,41 +76,21 @@ public class CustomListAdapter extends BaseAdapter {
 
         //Get the info from each so we can determine how to display them.
         String status1 = one.status;
-        String name1 = one.name;
         String status2 = two.status;
-        String name2 = two.name;
 
         holder.one.setText(one.name);
-        //text.setText(name1);
-        //text.setTypeface(font);
 
         //Set the text color and whether or not we can click on it based on if it's guaranteed vegan or not.
         if (status1.equals("")) {
-            //text.setTextColor(Color.BLACK);
-            //text.setClickable(false);
             holder.one.setTextColor(Color.BLACK);
             holder.one.setClickable(false);
         } else if (status1.equals("Sometimes Vegan")) {
-            //text.setTextColor(Color.rgb(r, g, b));
-            //text.setClickable(true);
             holder.one.setTextColor(Color.rgb(r, g, b));
             holder.one.setClickable(true);
         } else if (status1.equals("Not Vegan")) {
-            //text.setTextColor(Color.RED);
-            //text.setClickable(true);
             holder.one.setTextColor(Color.RED);
             holder.one.setClickable(true);
         }
-
-        //If we've set the ingredient to be clickable (it's not guaranteed vegan), set a click listener to it that will pop up the info box.
-        /*if (text.isClickable()) {
-            text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View vw) {
-                    ShowInfo(one);
-                }
-            });
-        }*/
 
         if (holder.one.isClickable()) {
             holder.one.setOnClickListener(new View.OnClickListener() {
@@ -123,33 +103,16 @@ public class CustomListAdapter extends BaseAdapter {
 
         //All the same as for the first ingredient.
         holder.two.setText(two.name);
-        //text2.setText(name2);
-        //text2.setTypeface(font);
         if (status2.equals("")) {
-            //text2.setTextColor(Color.BLACK);
-            //text2.setClickable(false);
             holder.two.setTextColor(Color.BLACK);
             holder.two.setClickable(false);
         } else if (status2.equals("Sometimes Vegan")){
-            //text2.setTextColor(Color.rgb(r, g, b));
-            //text2.setClickable(true);
             holder.two.setTextColor(Color.rgb(r, g, b));
             holder.two.setClickable(true);
         }else if (status2.equals("Not Vegan")) {
-            //text2.setTextColor(Color.RED);
-            //text2.setClickable(true);
             holder.two.setTextColor(Color.RED);
             holder.two.setClickable(true);
         }
-
-        /*if (text2.isClickable()) {
-            text2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View vw) {
-                    ShowInfo(two);
-                }
-            });
-        }*/
 
         if (holder.two.isClickable()) {
             holder.two.setOnClickListener(new View.OnClickListener() {
@@ -191,9 +154,8 @@ public class CustomListAdapter extends BaseAdapter {
         window.setVisibility(View.VISIBLE);
 
         //If the user clicks on the background outside of the info box, close the info box and bring them back to the results page.
-        //TODO: Make this so they can click anywhere outside the box, not just on the background.
-        final ImageView background = (ImageView) v.findViewById(R.id.lookupBG);
-        background.setClickable(true);
+        final ImageView background = (ImageView) v.findViewById(R.id.haze);
+        background.setVisibility(View.VISIBLE);
         background.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vw) {
@@ -201,6 +163,7 @@ public class CustomListAdapter extends BaseAdapter {
                 header.setVisibility(View.INVISIBLE);
                 window.setVisibility(View.INVISIBLE);
                 background.setClickable(false);
+                background.setVisibility(View.INVISIBLE);
             }
         });
     }
