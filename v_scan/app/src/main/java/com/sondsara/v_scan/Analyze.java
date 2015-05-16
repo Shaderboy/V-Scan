@@ -106,6 +106,7 @@ public class Analyze extends Activity {
     }
 
     void listenRestart() {
+        reset.setVisibility(View.VISIBLE);
         //If they click the "Scan Again" button on the bottom, go to our restart function.
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,7 +383,6 @@ public class Analyze extends Activity {
 
                     list.setVisibility(View.VISIBLE);
                     pic.setVisibility(View.VISIBLE);
-                    reset.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.GONE);
 
                 } catch (Exception e) {
@@ -390,7 +390,7 @@ public class Analyze extends Activity {
                     resultText.setText(sb.toString());
                     resultText.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
-                    reset.setVisibility(View.VISIBLE);
+                    listenRestart();
                     e.printStackTrace();
                 }
             }else{
@@ -398,7 +398,6 @@ public class Analyze extends Activity {
                 resultText.setText(sb.toString());
                 resultText.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.INVISIBLE);
-                reset.setVisibility(View.VISIBLE);
                 listenLookup();
                 //Set up the listener to rescan.
                 listenRestart();
