@@ -95,6 +95,13 @@ public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextL
             animalProducts.add(entry.getValue());
         }
 
+        if (newText.contains(" ") && (char) (newText.charAt(newText.length() - 1)) != ' '){
+            String[] words = newText.split(" ");
+            for (Map.Entry<String, animalIngredient> entry : Search.filterPrefix(sortedProducts, words[1]).entrySet()){
+                animalProducts.add(entry.getValue());
+            }
+        }
+
         SearchAdapter adapter = new SearchAdapter(this, animalProducts);
         list.setAdapter(adapter);
 

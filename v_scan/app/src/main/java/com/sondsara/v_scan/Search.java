@@ -58,11 +58,37 @@ public class Search extends Activity {
             //Search for our query.
             for (Map.Entry<String, animalIngredient> entry : filterPrefix(sortedProducts, query).entrySet()){
                 results.add(entry.getValue());
-                names.add(entry.getKey());
             }
 
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, names);
-            //setListAdapter(adapter);
+            boolean good = false;
+
+            if (query.contains(" ") && (char) (query.charAt(query.length() - 1)) != ' '){
+                String[] words = query.split(" ");
+                //for (Map.Entry<String, animalIngredient> entry : Search.filterPrefix(sortedProducts, words[1]).entrySet()){
+                //    results.add(entry.getValue());
+                //}
+                for (int w = 0; w < words.length; w++) {
+                    if (Analyze.excludes.contains(words[w])) {
+                        good = true;
+                    }
+                }
+                if (!good) {
+
+                    //If it's directly equal, add it to our shit list.
+                    for (int w = 0; w < words.length; w++) {
+                        if (MainActivity.animalProducts.containsKey(words[w])) {
+                            animalIngredient ap = MainActivity.animalProducts.get(words[w]);
+                            if (ap.name.equals(query))
+                                results.add(ap);
+                                //If it's not directly equal but contains an animal ingredient on our list, make a new item for it using the info from the item that flagged it.
+                            else {
+                                animalIngredient temp = new animalIngredient(query, ap.derivation, ap.status);
+                                results.add(temp);
+                            }
+                        }
+                    }
+                }
+            }
 
             SearchAdapter adapter = new SearchAdapter(this, results);
             list.setAdapter(adapter);

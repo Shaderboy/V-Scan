@@ -31,7 +31,7 @@ public class Analyze extends Activity {
 
     String upc = "";
     protected Factual factual = new Factual("wDhW6eCPSv2BwdJvvQP63Pbpat7cWAkTnxSazIRM", "9ZIQc30A8DM0sX4qBtZoXE8DtZzf9X5sOQRR3bWf", true);
-    private final Set<String> excludes = Collections.unmodifiableSet(new HashSet<String>() {
+    public static final Set<String> excludes = Collections.unmodifiableSet(new HashSet<String>() {
         {
             add("almond");
             add("soy");
@@ -88,8 +88,11 @@ public class Analyze extends Activity {
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //FactualRetrievalTask is what interacts with our online product database.
-        FactualRetrievalTask task = new FactualRetrievalTask();
-        task.execute();
+        //FactualRetrievalTask task = new FactualRetrievalTask();
+        //task.execute();
+
+        Intent intentLookup = new Intent(Analyze.this, Lookup.class);
+        startActivity(intentLookup);
 
     }
 

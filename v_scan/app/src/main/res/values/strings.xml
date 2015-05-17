@@ -4,5 +4,6 @@
     <string name="app_name">v_scan</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="search_instructions">Type the whole ingredient</string>
 
 </resources>
