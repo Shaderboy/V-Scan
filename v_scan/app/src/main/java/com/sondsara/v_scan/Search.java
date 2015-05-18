@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-//TODO: Since we're auto-culling the display based on real time input, figure out what to do when they hit enter!
-//TODO:(i.e. when this class gets called).
 public class Search extends Activity {
 
     private ListView list;

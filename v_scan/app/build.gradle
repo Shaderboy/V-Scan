@@ -14,8 +14,8 @@ android {
         applicationId "com.sondsara.v_scan"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 12
-        versionName "12.0"
+        versionCode 13
+        versionName "13.0"
     }
 
     compileOptions {

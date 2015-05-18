@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+//TODO: Solve the issue of how to handle animal products that start with non-animal products.
+//TODO: i.e. "Skim" won't turn up any real time results, even though they may be looking for "skim milk".
 public class Lookup extends ActionBarActivity implements SearchView.OnQueryTextListener {
 
     public static TreeMap<String, animalIngredient> sortedProducts = new TreeMap<String, animalIngredient>();
