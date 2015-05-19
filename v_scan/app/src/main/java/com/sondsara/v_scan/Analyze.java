@@ -88,11 +88,11 @@ public class Analyze extends Activity {
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //FactualRetrievalTask is what interacts with our online product database.
-        //FactualRetrievalTask task = new FactualRetrievalTask();
-        //task.execute();
+        FactualRetrievalTask task = new FactualRetrievalTask();
+        task.execute();
 
-        Intent intentLookup = new Intent(Analyze.this, Lookup.class);
-        startActivity(intentLookup);
+        //Intent intentLookup = new Intent(Analyze.this, Lookup.class);
+        //startActivity(intentLookup);
 
     }
 
