@@ -144,7 +144,14 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //Now launch the camera, which will kick off the scanning activity.
-        LaunchCamera();
+        //LaunchCamera();
+
+        //Start up our Analyze class, which checks the product ingredients against our list of animal products and displays the result.
+        Intent intent = new Intent(getApplicationContext(), Analyze.class);
+        //Give that class access to the upc, as well as our two custom databases.
+        //intent.putExtra(EXTRA_MESSAGE, upc);
+        //Go to Analyze.
+        this.startActivity(intent);
 
         //Intent intent = new Intent(MainActivity.this, Lookup.class);
         //startActivity(intent);

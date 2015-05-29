@@ -74,6 +74,16 @@
         android:visibility="invisible"
         android:layout_below="@+id/resultText" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Product"
+        android:id="@+id/addButton"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:layout_below="@+id/lookupButton"
+        android:layout_marginTop="15dp" />
+
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -129,5 +139,48 @@
         android:layout_marginTop="70dp"
         android:textColor="@android:color/black"
         android:layout_marginRight="15dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameField"
+        android:layout_above="@+id/popupWindow"
+        android:layout_alignLeft="@+id/lookupButton"
+        android:layout_alignStart="@+id/lookupButton"
+        android:text="Product Name"
+        android:visibility="invisible" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/companyField"
+        android:layout_alignLeft="@+id/lookupButton"
+        android:layout_alignStart="@+id/lookupButton"
+        android:text="Company Name"
+        android:visibility="invisible"
+        android:layout_below="@+id/nameField"
+        android:layout_marginTop="15dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ingredientsField"
+        android:layout_alignLeft="@+id/lookupButton"
+        android:layout_alignStart="@+id/lookupButton"
+        android:text="Ingredients"
+        android:visibility="invisible"
+        android:layout_below="@+id/companyField"
+        android:layout_marginTop="15dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/submitButton"
+        android:layout_alignLeft="@+id/lookupButton"
+        android:layout_alignStart="@+id/lookupButton"
+        android:visibility="invisible"
+        android:layout_below="@+id/ingredientsField"
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>

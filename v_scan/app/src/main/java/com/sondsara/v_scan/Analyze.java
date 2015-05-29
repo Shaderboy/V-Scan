@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -15,8 +17,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.factual.driver.Factual;
+import com.factual.driver.Metadata;
 import com.factual.driver.Query;
 import com.factual.driver.ReadResponse;
+import com.factual.driver.Submit;
+import com.factual.driver.SubmitResponse;
+import com.google.api.client.util.Maps;
 
 import org.json.JSONArray;
 
@@ -24,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 //This is where all the actual logic and display happens.
@@ -58,6 +65,11 @@ public class Analyze extends Activity {
     private ProgressBar progress;
     private ImageButton reset;
     private Button lookupButton;
+    private Button addButton;
+    private EditText nameField;
+    private EditText companyField;
+    private EditText ingredientsField;
+    private  Button submitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +95,17 @@ public class Analyze extends Activity {
         progress = (ProgressBar) findViewById(R.id.progressBar);
         reset = (ImageButton) findViewById(R.id.restartButton);
         lookupButton = (Button) findViewById(R.id.lookupButton);
+        addButton = (Button) findViewById(R.id.addButton);
 
         //This makes the whole layout stretch to fit the screen.
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //FactualRetrievalTask is what interacts with our online product database.
-        FactualRetrievalTask task = new FactualRetrievalTask();
-        task.execute();
+        //FactualRetrievalTask task = new FactualRetrievalTask();
+        //task.execute();
+
+        listenLookup();
+        listenAdd();
 
         //Intent intentLookup = new Intent(Analyze.this, Lookup.class);
         //startActivity(intentLookup);
@@ -106,6 +122,73 @@ public class Analyze extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    void listenAdd(){
+        addButton.setVisibility(View.VISIBLE);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View vw) {
+                addProduct();
+            }
+        });
+    }
+
+    void addProduct(){
+
+        lookupButton.setVisibility(View.INVISIBLE);
+        addButton.setVisibility(View.INVISIBLE);
+        resultText.setVisibility(View.INVISIBLE);
+        progress.setVisibility(View.INVISIBLE);
+
+        nameField = (EditText) findViewById(R.id.nameField);
+        companyField = (EditText) findViewById(R.id.companyField);
+        ingredientsField = (EditText) findViewById(R.id.ingredientsField);
+        submitButton = (Button) findViewById(R.id.submitButton);
+
+        nameField.setVisibility(View.VISIBLE);
+        companyField.setVisibility(View.VISIBLE);
+        ingredientsField.setVisibility(View.VISIBLE);
+        submitButton.setVisibility(View.VISIBLE);
+
+        background.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View vw) {
+               hideSoftKeyboard(Analyze.this, vw);
+            }
+        });
+
+        submitButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick (View vw) {
+                upc = "099482438548";
+
+                //JSONArray ingredients = new JSONArray();
+                //ingredients.put(ingredientsField.getText().toString());
+
+                Map<String, Object> values = Maps.newHashMap();
+                values.put("product_name", nameField.getText().toString());
+                values.put("brand", companyField.getText().toString());
+                //values.put("ingredients", ingredients);
+                values.put("upc", upc);
+
+                Metadata meta = new Metadata().user("V-Scan");
+                Submit submit = new Submit(values);
+
+                SubmitResponse submitResponse = factual.submit("products-cpg-nutrition", submit, meta);
+
+                /*StringBuffer sb = new StringBuffer();
+                sb.append(submitResponse.isNewEntity());
+                resultText.setText(sb.toString());
+                resultText.setVisibility(View.VISIBLE);*/
+            }
+        });
+
+    }
+
+    public static void hideSoftKeyboard (Activity activity, View view){
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
     void listenRestart() {
@@ -184,6 +267,7 @@ public class Analyze extends Activity {
                 resultText.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.INVISIBLE);
                 listenLookup();
+                listenAdd();
                 //Set up the listener to rescan.
                 listenRestart();
                 return null;
@@ -233,6 +317,7 @@ public class Analyze extends Activity {
                     resultText.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
                     listenLookup();
+                    listenAdd();
                     //Set up the listener to rescan.
                     listenRestart();
                     return;
@@ -248,6 +333,7 @@ public class Analyze extends Activity {
                     resultText.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
                     listenLookup();
+                    listenAdd();
                     //Set up the listener to rescan.
                     listenRestart();
                     return;
@@ -332,6 +418,7 @@ public class Analyze extends Activity {
                     resultText.setVisibility(View.VISIBLE);
                     progress.setVisibility(View.INVISIBLE);
                     listenLookup();
+                    listenAdd();
                     //Set up the listener to rescan.
                     listenRestart();
                     e.printStackTrace();
@@ -402,6 +489,7 @@ public class Analyze extends Activity {
                 resultText.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.INVISIBLE);
                 listenLookup();
+                listenAdd();
                 //Set up the listener to rescan.
                 listenRestart();
                 return;
