@@ -69,7 +69,7 @@ public class Analyze extends Activity {
     private EditText nameField;
     private EditText companyField;
     private EditText ingredientsField;
-    private  Button submitButton;
+    private Button submitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,7 @@ public class Analyze extends Activity {
         spacedAnimalProducts.putAll(MainActivity.spacedAnimalProducts);
         veganProducts = MainActivity.veganProducts;
         upc = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        upc = "099482438548";
 
         //Get references to all the gui elements.
         resultText = (TextView) findViewById(R.id.resultText);
@@ -101,11 +102,11 @@ public class Analyze extends Activity {
         background.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //FactualRetrievalTask is what interacts with our online product database.
-        //FactualRetrievalTask task = new FactualRetrievalTask();
-        //task.execute();
+        FactualRetrievalTask task = new FactualRetrievalTask();
+        task.execute();
 
-        listenLookup();
-        listenAdd();
+        //listenLookup();
+        //listenAdd();
 
         //Intent intentLookup = new Intent(Analyze.this, Lookup.class);
         //startActivity(intentLookup);
@@ -161,26 +162,8 @@ public class Analyze extends Activity {
         submitButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View vw) {
-                upc = "099482438548";
-
-                //JSONArray ingredients = new JSONArray();
-                //ingredients.put(ingredientsField.getText().toString());
-
-                Map<String, Object> values = Maps.newHashMap();
-                values.put("product_name", nameField.getText().toString());
-                values.put("brand", companyField.getText().toString());
-                //values.put("ingredients", ingredients);
-                values.put("upc", upc);
-
-                Metadata meta = new Metadata().user("V-Scan");
-                Submit submit = new Submit(values);
-
-                SubmitResponse submitResponse = factual.submit("products-cpg-nutrition", submit, meta);
-
-                /*StringBuffer sb = new StringBuffer();
-                sb.append(submitResponse.isNewEntity());
-                resultText.setText(sb.toString());
-                resultText.setVisibility(View.VISIBLE);*/
+                FactualSubmitTask subTask = new FactualSubmitTask();
+                subTask.execute();
             }
         });
 
@@ -237,6 +220,66 @@ public class Analyze extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected class FactualSubmitTask extends AsyncTask<Query, Integer, SubmitResponse> {
+
+        @Override
+        protected SubmitResponse doInBackground (Query... params){
+            //try {
+
+                JSONArray ingredients = new JSONArray();
+                String[] ingredientsList = ingredientsField.getText().toString().split(", ");
+                //ingredients.put(ingredientsField.getText().toString());
+                for (int i = 0; i < ingredientsList.length; i++){
+                    ingredients.put(ingredientsList[i]);
+                }
+
+                String putIngredients = ingredients.toString();
+
+                upc = "099482438548";
+                Map<String, Object> values = Maps.newHashMap();
+                values.put("product_name", nameField.getText().toString());
+                values.put("brand", companyField.getText().toString());
+                values.put("ingredients", putIngredients);
+                values.put("upc", upc);
+
+                Metadata meta = new Metadata().user("V-Scan");
+                Submit submit = new Submit(values);
+
+                SubmitResponse submitResponse = factual.submit("products-cpg-nutrition", submit, meta);
+
+                return submitResponse;
+
+            /*}catch(Exception e){
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run(){
+                        StringBuffer sb = new StringBuffer();
+                        sb.append("failed");
+                        resultText.setText(sb.toString());
+                        resultText.setVisibility(View.VISIBLE);
+                    }
+                });
+                return null;
+            }*/
+        }
+
+        @Override
+        protected void onPostExecute(final SubmitResponse submitResponse) {
+            runOnUiThread(new Runnable(){
+                @Override
+                public void run(){
+                    StringBuffer sb = new StringBuffer();
+                    if(submitResponse.isNewEntity())
+                        sb.append("Successfully added");
+                    else
+                        sb.append("That wasn't added properly.");
+                    resultText.setText(sb.toString());
+                    resultText.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
     //This is an asynchronous task, meaning it runs in the background, allowing us to do other stuff while it's loading.
